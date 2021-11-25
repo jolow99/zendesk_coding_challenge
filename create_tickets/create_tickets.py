@@ -1,7 +1,7 @@
 import json 
 import requests
 
-with open('create_tickets/tickets.json') as tickets, open('create_tickets/config.json') as config:
+with open('create_tickets/tickets.json') as tickets, open('config.json') as config:
     tickets = json.load(tickets)
     config = json.load(config)
 
