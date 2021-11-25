@@ -14,3 +14,14 @@ def get_tickets():
     }
     response = requests.request("GET", url, headers=headers)
     return json.dumps(response.json()["requests"], indent=4)
+
+def format_ticket(ticket_number, tickets):
+    # Return important ticket data
+    return {
+        "subject": tickets[ticket_number]["subject"],
+        "description": tickets[ticket_number]["description"],
+        "requester_id": tickets[ticket_number]["requester_id"],
+        "status": tickets[ticket_number]["status"],
+        "created_at": tickets[ticket_number]["created_at"],
+    }
+     
