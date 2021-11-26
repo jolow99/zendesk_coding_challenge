@@ -1,20 +1,20 @@
-from utility import get_tickets, format_ticket
+from utility import get_tickets, format_ticket, ThreadWithReturnValue
 import json
 
 if __name__ == '__main__':
     # Introduction
+    tickets_thread = ThreadWithReturnValue(target=get_tickets)
+    tickets_thread.start()
     print("Hello there! Welcome to the Zendesk Ticket Viewer")
-    print("---Press any key to continue---")
+    print("---Please type any key to input---")
     print("---Type 'q' to exit the program---")
     user_input = input()
     
     # Request all tickets and store into a JSON file 
     if user_input != 'q':
-        print("Please wait while I get your tickets")
-        tickets = get_tickets()
+        tickets = tickets_thread.join()
         with open(f"my_tickets.json", "w") as outfile: 
             outfile.write(tickets)
-        print("Okay I'm done!")
 
     # Reads ticket subjects from the JSON file in batches of 25
         page = 1
@@ -25,10 +25,9 @@ if __name__ == '__main__':
             for i in range((page-1)*25, page*25):
                 print(f"{i+1}. {tickets[i]['subject']}")
             print("You are on page ", page)
-            print("Length of tickets is ", len(tickets))
             valid_input = False
             while not valid_input:
-                user_input = input("Type > or < to go to the next or previous page, or type 'q' to exit: ")
+                user_input = input("Select a ticket by typing in its number \n type > or < to go to the next or previous page \n type 'q' to exit. \n")
                 if user_input == '>' and page < len(tickets)//25:
                     page += 1
                     valid_input = True
@@ -45,7 +44,7 @@ if __name__ == '__main__':
                     if int(user_input) <= len(tickets) and int(user_input) > 0:
                         print(f"You selected ticket {user_input}")
                         print(json.dumps(format_ticket(int(user_input)-1, tickets), indent=4))
-                        input("Press any key to continue")
+                        input("Type any key to continue \n")
                     else:
                         print("That is not a valid ticket number")
                 elif user_input.isalpha():
